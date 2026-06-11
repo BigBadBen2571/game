@@ -1,0 +1,1951 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Suerte 7 MX · H5</title>
+  <style>
+    :root {
+      --bg: #161412;
+      --surface: #211f1a;
+      --surface-2: #2b2821;
+      --surface-3: #343126;
+      --line: rgba(255, 247, 226, 0.12);
+      --text: #fff6df;
+      --muted: rgba(255, 246, 223, 0.68);
+      --soft: rgba(255, 246, 223, 0.46);
+      --gold: #f4c64b;
+      --red: #d6483b;
+      --green: #209d68;
+      --blue: #2f77d1;
+      --ok: #4fd18b;
+      --warn: #f4c64b;
+      --danger: #ff6961;
+      --shadow: 0 14px 34px rgba(0, 0, 0, 0.34);
+      --bottom-safe: env(safe-area-inset-bottom, 0px);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        linear-gradient(90deg, rgba(32, 157, 104, 0.18), transparent 28%, transparent 72%, rgba(214, 72, 59, 0.16)),
+        var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.09;
+      background-image:
+        linear-gradient(45deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255, 255, 255, 0.10) 25%, transparent 25%);
+      background-size: 22px 22px;
+      background-position: 0 0, 0 11px;
+      mask-image: linear-gradient(to bottom, #000, transparent 62%);
+    }
+
+    button, input {
+      font: inherit;
+      color: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .app {
+      width: min(480px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      position: relative;
+      padding: 0 12px calc(158px + var(--bottom-safe));
+    }
+
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      margin: 0 -12px;
+      padding: max(12px, env(safe-area-inset-top, 0px)) 12px 10px;
+      background: rgba(22, 20, 18, 0.92);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      background: #f0c647;
+      color: #21160a;
+      box-shadow: 0 8px 18px rgba(244, 198, 75, 0.2);
+    }
+
+    h1, h2, h3, p { margin: 0; }
+    h1 {
+      font-size: 18px;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .brand small {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+    }
+
+    .wallet {
+      min-width: 112px;
+      border: 1px solid rgba(244, 198, 75, 0.28);
+      background: rgba(244, 198, 75, 0.1);
+      border-radius: 8px;
+      padding: 7px 9px;
+      text-align: right;
+    }
+
+    .wallet span {
+      display: block;
+      color: var(--soft);
+      font-size: 10px;
+      line-height: 1.1;
+    }
+
+    .wallet strong {
+      display: block;
+      margin-top: 2px;
+      color: var(--gold);
+      font-size: 14px;
+      line-height: 1.1;
+    }
+
+    .round-strip {
+      display: grid;
+      grid-template-columns: 1.1fr 0.75fr 0.75fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .mini-stat {
+      min-height: 58px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.045);
+      padding: 8px;
+    }
+
+    .mini-stat span {
+      display: block;
+      color: var(--soft);
+      font-size: 10px;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .mini-stat strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 15px;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mini-stat small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.15;
+    }
+
+    .round-actions {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .quick-draw-btn {
+      min-height: 38px;
+      border-radius: 8px;
+      background: var(--gold);
+      color: #23170b;
+      font-size: 13px;
+      font-weight: 900;
+      box-shadow: 0 8px 16px rgba(244, 198, 75, 0.16);
+    }
+
+    .quick-draw-btn:disabled {
+      color: rgba(255, 246, 223, 0.42);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    .round-actions span {
+      color: var(--soft);
+      font-size: 10px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .top-nav {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .section {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      background: rgba(33, 31, 26, 0.92);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      scroll-margin-top: 190px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-head h2,
+    .section-head h3 {
+      font-size: 15px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      min-height: 24px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      padding: 4px 8px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.055);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge.ok {
+      color: #dff8e9;
+      border-color: rgba(79, 209, 139, 0.28);
+      background: rgba(79, 209, 139, 0.11);
+    }
+
+    .last-draw {
+      padding: 12px;
+    }
+
+    .draw-cards {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .draw-card {
+      min-width: 0;
+      aspect-ratio: 0.72;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--surface-2);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      align-items: center;
+      gap: 2px;
+      padding: 6px 4px 5px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        0 8px 16px rgba(0, 0, 0, 0.22);
+    }
+
+    .draw-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent 36%),
+        radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.12), transparent 38%);
+      pointer-events: none;
+    }
+
+    .draw-card::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 5px;
+      pointer-events: none;
+    }
+
+    .draw-card.red {
+      background: linear-gradient(160deg, rgba(92, 38, 40, 0.98), rgba(35, 29, 25, 0.96));
+      border-color: rgba(214, 72, 59, 0.46);
+    }
+
+    .draw-card.green {
+      background: linear-gradient(160deg, rgba(28, 78, 56, 0.98), rgba(31, 34, 27, 0.96));
+      border-color: rgba(32, 157, 104, 0.46);
+    }
+
+    .draw-card.blue {
+      background: linear-gradient(160deg, rgba(31, 57, 87, 0.98), rgba(31, 30, 35, 0.96));
+      border-color: rgba(47, 119, 209, 0.48);
+    }
+
+    .draw-card.gold {
+      color: #23170b;
+      background:
+        linear-gradient(145deg, #ffef9d, #f4c64b 52%, #c98c20);
+      border-color: #ffe28a;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.62),
+        0 10px 22px rgba(244, 198, 75, 0.26);
+    }
+
+    .draw-card .num {
+      justify-self: center;
+      min-width: 28px;
+      border-radius: 999px;
+      padding: 3px 5px;
+      background: rgba(0, 0, 0, 0.22);
+      color: #fff8e8;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1;
+      position: relative;
+      z-index: 1;
+    }
+
+    .draw-card .icon {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      min-height: 28px;
+      font-size: 22px;
+      line-height: 1;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.26));
+      position: relative;
+      z-index: 1;
+    }
+
+    .draw-card .name {
+      width: 100%;
+      color: var(--muted);
+      font-size: 8.5px;
+      line-height: 1.05;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .draw-card.gold .num {
+      color: #23170b;
+      background: rgba(255, 255, 255, 0.34);
+    }
+
+    .draw-card.gold .name { color: rgba(35, 23, 11, 0.72); }
+
+    .trust-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .trust-item {
+      min-height: 54px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .trust-item strong {
+      display: block;
+      font-size: 12px;
+      line-height: 1.12;
+    }
+
+    .trust-item span {
+      display: block;
+      margin-top: 4px;
+      color: var(--soft);
+      font-size: 10px;
+      line-height: 1.2;
+    }
+
+    .play-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      overflow-x: auto;
+      scroll-snap-type: x proximity;
+      scrollbar-width: none;
+    }
+
+    .play-tabs::-webkit-scrollbar,
+    .chips::-webkit-scrollbar,
+    .amounts::-webkit-scrollbar { display: none; }
+
+    .type-btn {
+      flex: 0 0 116px;
+      min-height: 72px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface-2);
+      padding: 9px 8px;
+      text-align: left;
+      scroll-snap-align: start;
+    }
+
+    .type-btn.active {
+      border-color: rgba(244, 198, 75, 0.68);
+      background: rgba(244, 198, 75, 0.13);
+    }
+
+    .type-btn strong {
+      display: block;
+      font-size: 12px;
+      line-height: 1.15;
+    }
+
+    .type-btn span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.22;
+    }
+
+    .type-btn em {
+      color: var(--gold);
+      font-style: normal;
+      font-weight: 900;
+    }
+
+    .option-area {
+      padding: 0 12px 12px;
+    }
+
+    .choice-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+
+    .choice-head span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .selection-mini {
+      max-width: 52%;
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 800;
+      text-align: right;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+
+    .chip,
+    .option-btn,
+    .ghost-btn,
+    .primary-btn {
+      min-height: 42px;
+      border-radius: 8px;
+      font-weight: 800;
+    }
+
+    .chip {
+      flex: 0 0 auto;
+      min-width: 72px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.055);
+      padding: 8px 11px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .chip.active {
+      color: #23170b;
+      border-color: var(--gold);
+      background: var(--gold);
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .card-picker-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .card-picker-meta span {
+      color: var(--soft);
+      font-size: 11px;
+      line-height: 1.2;
+    }
+
+    .card-picker-meta .ghost-btn {
+      min-height: 32px;
+      padding: 6px 9px;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .card-picker-shell {
+      max-height: 184px;
+      overflow-y: auto;
+      padding-right: 2px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(244, 198, 75, 0.45) transparent;
+    }
+
+    .pick-card {
+      min-width: 0;
+      aspect-ratio: 0.78;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2px;
+      padding: 4px 2px;
+    }
+
+    .pick-card.active {
+      border-color: var(--gold);
+      background: rgba(244, 198, 75, 0.17);
+      transform: translateY(-1px);
+    }
+
+    .pick-card .n {
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .pick-card .e {
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    .pick-card .name {
+      width: 100%;
+      color: var(--soft);
+      font-size: 8px;
+      line-height: 1;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .option-btn {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.055);
+      padding: 10px;
+      text-align: left;
+    }
+
+    .option-btn.active {
+      border-color: var(--gold);
+      background: rgba(244, 198, 75, 0.14);
+    }
+
+    .option-btn strong {
+      display: block;
+      font-size: 14px;
+      line-height: 1.1;
+    }
+
+    .option-btn span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
+    .records {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+    }
+
+    .record {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.045);
+      padding: 10px;
+    }
+
+    .record-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .record-title {
+      min-width: 0;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .record-title small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .record-lines {
+      display: grid;
+      gap: 4px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
+    .record-lines strong { color: var(--text); }
+
+    .verify-panel {
+      display: none;
+      padding: 0 12px 12px;
+    }
+
+    .verify-panel.show { display: block; }
+
+    .hash-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .hash-box {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.18);
+      padding: 9px;
+    }
+
+    .hash-box span {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.15;
+      margin-bottom: 5px;
+    }
+
+    .hash-box code {
+      display: block;
+      color: var(--gold);
+      font-size: 10px;
+      line-height: 1.28;
+      overflow-wrap: anywhere;
+    }
+
+    .inline-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .ghost-btn {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.055);
+      padding: 8px 10px;
+      color: var(--text);
+      font-size: 12px;
+    }
+
+    .ghost-btn.danger {
+      color: #ffd7d4;
+      border-color: rgba(255, 105, 97, 0.32);
+      background: rgba(255, 105, 97, 0.1);
+    }
+
+    .empty {
+      min-height: 58px;
+      display: grid;
+      place-items: center;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      color: var(--soft);
+      font-size: 12px;
+      text-align: center;
+      padding: 12px;
+    }
+
+    .bottom-ticket {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      z-index: 30;
+      width: min(480px, 100%);
+      transform: translateX(-50%);
+      padding: 10px 12px calc(10px + var(--bottom-safe));
+      border-top: 1px solid var(--line);
+      background: rgba(22, 20, 18, 0.94);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 -14px 30px rgba(0, 0, 0, 0.32);
+    }
+
+    .ticket-summary {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 92px 58px;
+      gap: 8px;
+      align-items: stretch;
+      margin-bottom: 8px;
+    }
+
+    .ticket-choice,
+    .ticket-prize {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 8px;
+      min-width: 0;
+    }
+
+    .ticket-choice span,
+    .ticket-prize span {
+      display: block;
+      color: var(--soft);
+      font-size: 10px;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .ticket-choice strong,
+    .ticket-prize strong {
+      display: block;
+      font-size: 13px;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ticket-choice small {
+      display: block;
+      margin-top: 4px;
+      color: var(--gold);
+      font-size: 10px;
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .quick-pick-btn {
+      min-height: 44px;
+      border-radius: 8px;
+      border: 1px solid rgba(244, 198, 75, 0.36);
+      background: rgba(244, 198, 75, 0.12);
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .sticky-amounts {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr) 82px;
+      gap: 7px;
+      margin-bottom: 8px;
+    }
+
+    .sticky-amount-btn {
+      min-height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.055);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .sticky-amount-btn.active {
+      color: #23170b;
+      border-color: var(--gold);
+      background: var(--gold);
+    }
+
+    .sticky-custom {
+      width: 100%;
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.2);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 900;
+      text-align: center;
+      outline: none;
+    }
+
+    .sticky-custom:focus {
+      border-color: rgba(244, 198, 75, 0.7);
+    }
+
+    .primary-btn {
+      width: 100%;
+      color: #23170b;
+      background: var(--gold);
+      box-shadow: 0 8px 18px rgba(244, 198, 75, 0.22);
+      padding: 12px;
+      font-size: 15px;
+    }
+
+    .primary-btn:disabled {
+      color: rgba(255, 246, 223, 0.42);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    .nav-btn {
+      min-height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.045);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .nav-btn.active {
+      color: var(--gold);
+      border-color: rgba(244, 198, 75, 0.36);
+      background: rgba(244, 198, 75, 0.08);
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(154px + var(--bottom-safe));
+      z-index: 40;
+      width: min(440px, calc(100% - 28px));
+      transform: translateX(-50%);
+      display: grid;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast-item {
+      border: 1px solid rgba(244, 198, 75, 0.26);
+      border-radius: 8px;
+      background: rgba(33, 31, 26, 0.96);
+      box-shadow: var(--shadow);
+      padding: 10px 12px;
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .rg {
+      margin: 14px 2px 0;
+      color: var(--soft);
+      font-size: 10px;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    @media (max-width: 360px) {
+      .app { padding-left: 10px; padding-right: 10px; }
+      .top { margin-left: -10px; margin-right: -10px; padding-left: 10px; padding-right: 10px; }
+      .round-strip { grid-template-columns: 1fr 0.82fr; }
+      .round-strip .mini-stat:last-child { grid-column: span 2; }
+      .round-actions { grid-template-columns: 1fr; }
+      .round-actions span { white-space: normal; }
+      .ticket-summary { grid-template-columns: minmax(0, 1fr) 82px 54px; }
+      .sticky-amounts { grid-template-columns: repeat(4, 1fr); }
+      .sticky-custom { grid-column: span 4; }
+      .card-grid { grid-template-columns: repeat(5, 1fr); }
+      .draw-cards { gap: 5px; }
+      .trust-row { grid-template-columns: 1fr; }
+    }
+
+    @media (min-width: 481px) {
+      body {
+        display: flex;
+        justify-content: center;
+      }
+
+      .app {
+        border-left: 1px solid rgba(255, 246, 223, 0.08);
+        border-right: 1px solid rgba(255, 246, 223, 0.08);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="brand-row">
+        <div class="brand">
+          <div class="mark">7</div>
+          <div>
+            <h1>Suerte 7 MX</h1>
+            <small>Lotería rápida verificable</small>
+          </div>
+        </div>
+        <div class="wallet">
+          <span>Saldo demo</span>
+          <strong id="balance">$0.00</strong>
+        </div>
+      </div>
+      <div class="round-strip">
+        <div class="mini-stat">
+          <span>Sorteo</span>
+          <strong id="roundId">S7-0000</strong>
+          <small id="roundTime">Hora local</small>
+        </div>
+        <div class="mini-stat">
+          <span>Cierra en</span>
+          <strong id="lockCountdown">04:45</strong>
+          <small id="statusText">Acepta apuestas</small>
+        </div>
+        <div class="mini-stat">
+          <span>Resultado en</span>
+          <strong id="drawCountdown">05:00</strong>
+          <small id="shortHash">Hash listo</small>
+        </div>
+      </div>
+      <div class="round-actions">
+        <button class="quick-draw-btn" id="quickDrawBtn">Finalizar cuenta regresiva</button>
+        <span>Solo demo</span>
+      </div>
+      <nav class="top-nav">
+        <button class="nav-btn active" data-target="playSection">Jugar</button>
+        <button class="nav-btn" data-target="betsSection">Boletos</button>
+        <button class="nav-btn" data-target="historySection">Resultados</button>
+        <button class="nav-btn" data-target="trustSection">Confianza</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="section" id="drawSection">
+        <div class="section-head">
+          <div>
+            <h2>Último resultado</h2>
+            <p id="lastResultLabel">Aún no hay resultados en esta sesión.</p>
+          </div>
+          <span class="badge ok" id="verifyBadge">Verificable</span>
+        </div>
+        <div class="last-draw">
+          <div class="draw-cards" id="resultCards"></div>
+          <div class="trust-row">
+            <div class="trust-item">
+              <strong>Licencia legal</strong>
+              <span>Operación regulada en México</span>
+            </div>
+            <div class="trust-item">
+              <strong>Premio inmediato</strong>
+              <span>Se acredita al saldo al ganar</span>
+            </div>
+            <div class="trust-item">
+              <strong>Transparente</strong>
+              <span>Historial y sorteo verificable</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="playSection">
+        <div class="section-head">
+          <div>
+            <h2>Jugar</h2>
+            <p id="ruleText">Elige una jugada y confirma tu boleto.</p>
+          </div>
+          <span class="badge" id="oddsBadge">x0.00</span>
+        </div>
+        <div class="play-tabs" id="betTypes"></div>
+        <div class="option-area">
+          <div class="choice-head">
+            <span id="selectionInstruction">Selecciona una carta</span>
+            <strong class="selection-mini" id="selectionLabel">Sin selección</strong>
+          </div>
+          <div class="chips" id="themeChips"></div>
+          <div id="optionsArea"></div>
+        </div>
+      </section>
+
+      <section class="section" id="betsSection">
+        <div class="section-head">
+          <div>
+            <h3>Mis boletos</h3>
+            <p>Boletos pendientes, ganados y perdidos.</p>
+          </div>
+          <span class="badge" id="ticketCount">0</span>
+        </div>
+        <div class="records" id="betRecords"></div>
+      </section>
+
+      <section class="section" id="historySection">
+        <div class="section-head">
+          <div>
+            <h3>Historial</h3>
+            <p>Resultados recientes y comprobación del sorteo.</p>
+          </div>
+          <button class="ghost-btn" id="forceDrawBtn">Finalizar demo</button>
+        </div>
+        <div class="records" id="drawHistory"></div>
+        <div class="verify-panel" id="verificationPanel"></div>
+      </section>
+
+      <section class="section" id="trustSection">
+        <div class="section-head">
+          <div>
+            <h3>Confianza</h3>
+            <p>Señales clave antes de usar dinero real.</p>
+          </div>
+          <span class="badge ok">18+</span>
+        </div>
+        <div class="records">
+          <div class="record">
+            <div class="record-title">Cada boleto guarda comprobante</div>
+            <div class="record-lines">
+              <div>Selección, cuota, monto, hora y sorteo quedan visibles.</div>
+            </div>
+          </div>
+          <div class="record">
+            <div class="record-title">Cada resultado se puede revisar</div>
+            <div class="record-lines">
+              <div>El hash se publica antes del cierre y la semilla se revela después.</div>
+            </div>
+          </div>
+          <div class="record">
+            <div class="record-title">Los premios se liquidan al saldo</div>
+            <div class="record-lines">
+              <div>En producción debe conectarse a wallet, KYC, límites y auditoría.</div>
+            </div>
+          </div>
+          <div class="inline-actions">
+            <button class="ghost-btn" id="addBalanceBtn">Añadir $500 demo</button>
+            <button class="ghost-btn danger" id="resetBtn">Reiniciar</button>
+          </div>
+        </div>
+      </section>
+
+      <p class="rg">Solo para mayores de 18 años. Juega responsablemente. Esta versión H5 es un prototipo demo sin dinero real.</p>
+    </main>
+  </div>
+
+  <div class="bottom-ticket">
+    <div class="ticket-summary">
+      <div class="ticket-choice">
+        <span id="ticketMode">Carta dorada · x49.50</span>
+        <strong id="ticketSelection">Elige una carta</strong>
+        <small id="ticketStake">$20.00 MXN</small>
+      </div>
+      <div class="ticket-prize">
+        <span>Premio</span>
+        <strong id="ticketWin">--</strong>
+      </div>
+      <button class="quick-pick-btn" id="quickPickBtn">Azar</button>
+    </div>
+    <div class="sticky-amounts" id="stickyAmountButtons">
+      <button class="sticky-amount-btn" data-amount="10">$10</button>
+      <button class="sticky-amount-btn active" data-amount="20">$20</button>
+      <button class="sticky-amount-btn" data-amount="50">$50</button>
+      <button class="sticky-amount-btn" data-amount="100">$100</button>
+      <input class="sticky-custom" id="stakeInput" type="number" min="1" step="1" inputmode="numeric" value="20" aria-label="Monto personalizado" />
+    </div>
+    <button class="primary-btn" id="placeBetBtn">Confirmar boleto</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_KEY = "suerte7_mx_h5_demo_v2";
+    const DRAW_MS = 5 * 60 * 1000;
+    const LOCK_MS = 15 * 1000;
+
+    const cards = [
+      [1,"El Gallo","🐓","Tradición"],[2,"La Catrina","💀","Tradición"],[3,"El Mariachi","🎺","Tradición"],[4,"La Piñata","🪅","Tradición"],[5,"El Sombrero","👒","Tradición"],[6,"El Alebrije","🐉","Tradición"],[7,"La Máscara","🎭","Tradición"],[8,"Papel Picado","🎊","Tradición"],[9,"La Calavera","💀","Tradición"],
+      [10,"El Taco","🌮","Comida"],[11,"El Elote","🌽","Comida"],[12,"El Chile","🌶️","Comida"],[13,"El Maíz","🌽","Comida"],[14,"El Mole","🍫","Comida"],[15,"El Cacao","🍫","Comida"],[16,"Pan Dulce","🥐","Comida"],[17,"El Pozole","🍲","Comida"],[18,"La Horchata","🥤","Comida"],
+      [19,"El Balón","⚽","Fútbol"],[20,"La Portería","🥅","Fútbol"],[21,"El Gol","🥳","Fútbol"],[22,"La Copa","🏆","Fútbol"],[23,"La Cancha","🏟️","Fútbol"],[24,"Camiseta","👕","Fútbol"],[25,"El Silbato","📣","Fútbol"],[26,"El Estadio","🏟️","Fútbol"],[27,"La Afición","🙌","Fútbol"],
+      [28,"La Feria","🎡","Fiesta"],[29,"El Confeti","🎉","Fiesta"],[30,"Campana","🔔","Fiesta"],[31,"El Baile","💃","Fiesta"],[32,"La Guitarra","🎸","Fiesta"],[33,"El Tambor","🥁","Fiesta"],[34,"Los Fuegos","🎆","Fiesta"],[35,"La Banda","🎷","Fiesta"],[36,"Carnaval","🎭","Fiesta"],
+      [37,"El Nopal","🌵","Naturaleza"],[38,"El Ajolote","🦎","Naturaleza"],[39,"El Jaguar","🐆","Naturaleza"],[40,"El Águila","🦅","Naturaleza"],[41,"Mariposa","🦋","Naturaleza"],[42,"El Sol","☀️","Naturaleza"],[43,"La Luna","🌙","Naturaleza"],[44,"El Volcán","🌋","Naturaleza"],[45,"La Playa","🏖️","Naturaleza"],
+      [46,"La Moneda","🪙","Suerte"],[47,"Diamante","💎","Suerte"],[48,"La Llave","🗝️","Suerte"],[49,"El Cofre","🧰","Suerte"],[50,"Herradura","🐴","Suerte"],[51,"Amuleto","🧿","Suerte"],[52,"El Rayo","⚡","Suerte"],[53,"La Corona","👑","Suerte"],[54,"Fortuna","🍀","Suerte"]
+    ].map(([number, name, icon, theme]) => ({
+      number,
+      name,
+      icon,
+      theme,
+      color: number <= 18 ? "Rojo" : number <= 36 ? "Verde" : "Azul",
+      size: number <= 27 ? "Chico" : "Grande",
+      parity: number % 2 === 0 ? "Par" : "Impar"
+    }));
+
+    const cardThemes = Array.from(new Set(cards.map(card => card.theme)));
+    const themes = ["Todas", ...cardThemes];
+    const cardByNumber = new Map(cards.map(card => [card.number, card]));
+
+    const betTypes = {
+      golden: {
+        label: "Carta dorada",
+        desc: "Acierta la carta 7.",
+        rule: "Ganas si tu carta es la carta dorada.",
+        odds: 49.5,
+        mode: "card",
+        exact: 1,
+        eval: (draw, sel) => draw.golden.number === sel[0]
+      },
+      regular: {
+        label: "Carta regular",
+        desc: "Sale entre las 6 cartas.",
+        rule: "Ganas si tu carta aparece entre las 6 cartas regulares.",
+        odds: 8.2,
+        mode: "card",
+        exact: 1,
+        eval: (draw, sel) => draw.regular.some(card => card.number === sel[0])
+      },
+      any: {
+        label: "Cualquier carta",
+        desc: "Sale en las 7 cartas.",
+        rule: "Ganas si tu carta aparece en cualquier posición.",
+        odds: 7.0,
+        mode: "card",
+        exact: 1,
+        eval: (draw, sel) => allDrawNumbers(draw).includes(sel[0])
+      },
+      size: {
+        label: "Grande/Chico",
+        desc: "Número alto o bajo.",
+        rule: "Ganas si el número de la carta dorada coincide.",
+        odds: 1.84,
+        mode: "option",
+        options: ["Grande", "Chico"],
+        exact: 1,
+        eval: (draw, sel) => draw.golden.size === sel[0]
+      },
+      parity: {
+        label: "Par/Impar",
+        desc: "Número par o impar.",
+        rule: "Ganas si la carta dorada es par o impar según tu elección.",
+        odds: 1.84,
+        mode: "option",
+        options: ["Par", "Impar"],
+        exact: 1,
+        eval: (draw, sel) => draw.golden.parity === sel[0]
+      },
+      color: {
+        label: "Color",
+        desc: "Rojo, verde o azul.",
+        rule: "Ganas si el color de la carta dorada coincide.",
+        odds: 2.75,
+        mode: "option",
+        options: ["Rojo", "Verde", "Azul"],
+        exact: 1,
+        eval: (draw, sel) => draw.golden.color === sel[0]
+      },
+      theme: {
+        label: "Tema",
+        desc: "Fútbol, comida y más.",
+        rule: "Ganas si el tema de la carta dorada coincide.",
+        odds: 5.5,
+        mode: "option",
+        options: cardThemes,
+        exact: 1,
+        eval: (draw, sel) => draw.golden.theme === sel[0]
+      },
+      double: {
+        label: "Doble suerte",
+        desc: "Elige 2 cartas.",
+        rule: "Ganas si tus 2 cartas aparecen en las 7 cartas.",
+        odds: 60,
+        mode: "card",
+        exact: 2,
+        eval: (draw, sel) => sel.every(n => allDrawNumbers(draw).includes(n))
+      },
+      nosalir: {
+        label: "Sin salir 5",
+        desc: "Elige 5 que no salgan.",
+        rule: "Ganas si ninguna de tus 5 cartas aparece en el sorteo.",
+        odds: 1.86,
+        mode: "card",
+        exact: 5,
+        eval: (draw, sel) => sel.every(n => !allDrawNumbers(draw).includes(n))
+      }
+    };
+
+    let state = null;
+    let selectedType = "golden";
+    let selection = [];
+    let activeTheme = "Todas";
+    let drawing = false;
+    let verificationFocus = null;
+
+    const $ = id => document.getElementById(id);
+
+    function money(value) {
+      return Number(value || 0).toLocaleString("es-MX", {
+        style: "currency",
+        currency: "MXN"
+      });
+    }
+
+    function pad(n) {
+      return String(n).padStart(2, "0");
+    }
+
+    function num(n) {
+      return String(n).padStart(2, "0");
+    }
+
+    function formatTime(ms) {
+      const safe = Math.max(0, ms);
+      const s = Math.floor(safe / 1000);
+      return `${pad(Math.floor(s / 60))}:${pad(s % 60)}`;
+    }
+
+    function formatDate(ts) {
+      return new Date(ts).toLocaleString("es-MX", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      });
+    }
+
+    function colorClass(color) {
+      if (color === "Rojo") return "red";
+      if (color === "Verde") return "green";
+      return "blue";
+    }
+
+    function allDrawNumbers(draw) {
+      return [...draw.regular.map(card => card.number), draw.golden.number];
+    }
+
+    async function sha256(str) {
+      if (window.crypto && crypto.subtle && window.TextEncoder) {
+        const bytes = new TextEncoder().encode(str);
+        const digest = await crypto.subtle.digest("SHA-256", bytes);
+        return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, "0")).join("");
+      }
+      return fallbackHash(str);
+    }
+
+    function fallbackHash(str) {
+      let h1 = 0xdeadbeef ^ str.length;
+      let h2 = 0x41c6ce57 ^ str.length;
+      for (let i = 0, ch; i < str.length; i++) {
+        ch = str.charCodeAt(i);
+        h1 = Math.imul(h1 ^ ch, 2654435761);
+        h2 = Math.imul(h2 ^ ch, 1597334677);
+      }
+      h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+      h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+      const base = ((h2 >>> 0).toString(16).padStart(8, "0") + (h1 >>> 0).toString(16).padStart(8, "0"));
+      return (base + base + base + base).slice(0, 64);
+    }
+
+    function randomHex(bytes = 32) {
+      if (window.crypto && crypto.getRandomValues) {
+        const arr = new Uint8Array(bytes);
+        crypto.getRandomValues(arr);
+        return [...arr].map(b => b.toString(16).padStart(2, "0")).join("");
+      }
+      return Array.from({ length: bytes }, () => Math.floor(Math.random() * 256).toString(16).padStart(2, "0")).join("");
+    }
+
+    async function createDemoDraw(seq, minutesAgo) {
+      const createdAt = Date.now() - minutesAgo * 60 * 1000;
+      const dateKey = new Date(createdAt).toISOString().slice(0, 10).replace(/-/g, "");
+      const roundId = `S7-${dateKey}-${String(seq).padStart(4, "0")}`;
+      const serverSeed = await sha256(`suerte7-h5-default-server-seed-${seq}`);
+      const serverSeedHash = await sha256(serverSeed);
+      const publicSeed = `PUBLIC-H5-DEMO-DEFAULT-${seq}`;
+      const betSnapshotHash = await sha256(JSON.stringify([]));
+      const finalSeed = await sha256(`${serverSeed}|${publicSeed}|${roundId}|${betSnapshotHash}`);
+      const deck = await shuffleDeck(finalSeed);
+      return {
+        id: `D-DEMO-${seq}`,
+        roundId,
+        createdAt,
+        manual: false,
+        result: {
+          regular: deck.slice(0, 6),
+          golden: deck[6]
+        },
+        serverSeed,
+        serverSeedHash,
+        publicSeed,
+        betSnapshotHash,
+        finalSeed,
+        verified: true
+      };
+    }
+
+    async function defaultState() {
+      return {
+        balance: 1000,
+        bets: [],
+        draws: [
+          await createDemoDraw(2, 5),
+          await createDemoDraw(1, 10)
+        ],
+        roundSeq: 3,
+        currentRound: null
+      };
+    }
+
+    async function newRound() {
+      const seq = state.roundSeq++;
+      const startAt = Date.now();
+      const serverSeed = randomHex(32);
+      const serverSeedHash = await sha256(serverSeed);
+      state.currentRound = {
+        id: `S7-${new Date(startAt).toISOString().slice(0, 10).replace(/-/g, "")}-${String(seq).padStart(4, "0")}`,
+        startAt,
+        endAt: startAt + DRAW_MS,
+        lockAt: startAt + DRAW_MS - LOCK_MS,
+        serverSeed,
+        serverSeedHash
+      };
+      save();
+    }
+
+    async function load() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        state = raw ? JSON.parse(raw) : await defaultState();
+      } catch (error) {
+        state = await defaultState();
+      }
+      if (!state.currentRound) await newRound();
+      if (state.currentRound && Date.now() >= state.currentRound.endAt) {
+        await performDraw(false);
+      }
+    }
+
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function toast(message) {
+      const node = document.createElement("div");
+      node.className = "toast-item";
+      node.textContent = message;
+      $("toast").appendChild(node);
+      setTimeout(() => node.remove(), 3200);
+    }
+
+    function render() {
+      renderHeader();
+      renderResultCards();
+      renderBetTypes();
+      renderThemeChips();
+      renderOptions();
+      renderStake();
+      renderTicket();
+      renderBetRecords();
+      renderDrawHistory();
+      renderVerification();
+    }
+
+    function renderHeader() {
+      const round = state.currentRound;
+      const now = Date.now();
+      const locked = now >= round.lockAt;
+      $("balance").textContent = money(state.balance);
+      $("roundId").textContent = round.id;
+      $("roundTime").textContent = `Inicio ${formatDate(round.startAt)}`;
+      $("drawCountdown").textContent = formatTime(round.endAt - now);
+      $("lockCountdown").textContent = locked ? "00:00" : formatTime(round.lockAt - now);
+      $("statusText").textContent = drawing ? "Generando" : locked ? "Cerrado" : "Acepta apuestas";
+      $("shortHash").textContent = round.serverSeedHash.slice(0, 8) + "...";
+      $("quickDrawBtn").disabled = drawing;
+      $("forceDrawBtn").disabled = drawing;
+    }
+
+    function renderResultCards() {
+      const last = state.draws[0];
+      if (!last) {
+        $("lastResultLabel").textContent = "Aún no hay resultados en esta sesión.";
+        $("verifyBadge").textContent = "Verificable";
+        $("resultCards").innerHTML = Array.from({ length: 7 }, (_, index) => `
+          <div class="draw-card ${index === 6 ? "gold" : ""}">
+            <div class="num">?</div>
+            <div class="icon">${index === 6 ? "✨" : "?"}</div>
+            <div class="name">${index === 6 ? "Dorada" : "Carta"}</div>
+          </div>
+        `).join("");
+        return;
+      }
+      $("lastResultLabel").textContent = `${last.roundId} · ${formatDate(last.createdAt)}`;
+      $("verifyBadge").textContent = "OK";
+      $("resultCards").innerHTML = [
+        ...last.result.regular.map(card => drawCardHtml(card, false)),
+        drawCardHtml(last.result.golden, true)
+      ].join("");
+    }
+
+    function drawCardHtml(card, gold) {
+      return `
+        <div class="draw-card ${gold ? "gold" : colorClass(card.color)}">
+          <div class="num">${num(card.number)}</div>
+          <div class="icon">${card.icon}</div>
+          <div class="name">${gold ? "Dorada" : card.name}</div>
+        </div>
+      `;
+    }
+
+    function renderBetTypes() {
+      $("betTypes").innerHTML = Object.entries(betTypes).map(([key, type]) => `
+        <button class="type-btn ${selectedType === key ? "active" : ""}" data-type="${key}">
+          <strong>${type.label} <em>x${formatOdds(type.odds)}</em></strong>
+          <span>${type.desc}</span>
+        </button>
+      `).join("");
+      $("betTypes").querySelectorAll(".type-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          selectedType = button.dataset.type;
+          selection = [];
+          render();
+        });
+      });
+    }
+
+    function renderThemeChips() {
+      const type = betTypes[selectedType];
+      if (type.mode !== "card") {
+        $("themeChips").innerHTML = "";
+        return;
+      }
+      $("themeChips").innerHTML = themes.map(theme => `
+        <button class="chip ${activeTheme === theme ? "active" : ""}" data-theme="${theme}">${theme}</button>
+      `).join("");
+      $("themeChips").querySelectorAll(".chip").forEach(button => {
+        button.addEventListener("click", () => {
+          activeTheme = button.dataset.theme;
+          renderOptions();
+          renderThemeChips();
+        });
+      });
+    }
+
+    function renderOptions() {
+      const type = betTypes[selectedType];
+      $("ruleText").textContent = type.rule;
+      $("oddsBadge").textContent = `x${formatOdds(type.odds)}`;
+      $("selectionInstruction").textContent = type.mode === "card"
+        ? `Selecciona ${type.exact} carta${type.exact > 1 ? "s" : ""}`
+        : "Selecciona una opción";
+      $("selectionLabel").textContent = selection.length ? selectionToLabel(selectedType, selection) : "Sin selección";
+
+      if (type.mode === "option") {
+        $("optionsArea").innerHTML = `
+          <div class="option-grid">
+            ${type.options.map(option => `
+              <button class="option-btn ${selection.includes(option) ? "active" : ""}" data-option="${option}">
+                <strong>${option}</strong>
+                <span>${optionHint(selectedType, option)}</span>
+              </button>
+            `).join("")}
+          </div>
+        `;
+        $("optionsArea").querySelectorAll(".option-btn").forEach(button => {
+          button.addEventListener("click", () => {
+            selection = [button.dataset.option];
+            render();
+          });
+        });
+        return;
+      }
+
+      const visibleCards = cardsForActivePicker();
+      const metaText = activeTheme === "Todas"
+        ? "Mostrando las 54 cartas"
+        : `${visibleCards.length} cartas de ${activeTheme}`;
+      $("optionsArea").innerHTML = `
+        <div class="card-picker-meta">
+          <span>${metaText}</span>
+        </div>
+        <div class="card-picker-shell">
+          <div class="card-grid">
+            ${visibleCards.map(card => `
+              <button class="pick-card ${selection.includes(card.number) ? "active" : ""}" data-number="${card.number}">
+                <span class="n">${num(card.number)}</span>
+                <span class="e">${card.icon}</span>
+                <span class="name">${card.name}</span>
+              </button>
+            `).join("")}
+          </div>
+        </div>
+      `;
+      $("optionsArea").querySelectorAll(".pick-card").forEach(button => {
+        button.addEventListener("click", () => toggleCard(Number(button.dataset.number)));
+      });
+    }
+
+    function cardsForActivePicker() {
+      if (activeTheme === "Todas") {
+        return cards;
+      }
+      return cards.filter(card => card.theme === activeTheme);
+    }
+
+    function optionHint(type, option) {
+      if (type === "color") {
+        if (option === "Rojo") return "Cartas 01 a 18";
+        if (option === "Verde") return "Cartas 19 a 36";
+        return "Cartas 37 a 54";
+      }
+      if (type === "size") return option === "Grande" ? "Cartas 28 a 54" : "Cartas 01 a 27";
+      if (type === "parity") return option === "Par" ? "Números pares" : "Números impares";
+      if (type === "theme") return `${cards.filter(card => card.theme === option).length} cartas`;
+      return "";
+    }
+
+    function toggleCard(number) {
+      const type = betTypes[selectedType];
+      if (selection.includes(number)) {
+        selection = selection.filter(item => item !== number);
+      } else if (selection.length >= type.exact) {
+        if (type.exact === 1) selection = [number];
+        else toast(`Solo puedes elegir ${type.exact} cartas.`);
+      } else {
+        selection.push(number);
+      }
+      render();
+    }
+
+    function selectionToLabel(typeKey, sel) {
+      const type = betTypes[typeKey];
+      if (type.mode === "option") return sel.join(", ");
+      return sel.map(number => {
+        const card = cardByNumber.get(number);
+        return `${num(number)} ${card ? card.name : ""}`;
+      }).join(", ");
+    }
+
+    function renderStake() {
+      const stake = getStake();
+      $("ticketStake").textContent = money(stake);
+      document.querySelectorAll(".sticky-amount-btn").forEach(button => {
+        button.classList.toggle("active", Number(button.dataset.amount) === stake);
+      });
+    }
+
+    function renderTicket() {
+      const type = betTypes[selectedType];
+      const stake = getStake();
+      const check = canPlaceBet();
+      const hasSelection = selection.length === type.exact;
+      $("ticketMode").textContent = `${type.label} · x${formatOdds(type.odds)}`;
+      $("ticketSelection").textContent = hasSelection ? selectionToLabel(selectedType, selection) : quickPickHint(type);
+      $("ticketWin").textContent = hasSelection ? money(stake * type.odds) : "--";
+      $("placeBetBtn").disabled = !check.ok;
+      $("placeBetBtn").textContent = check.ok ? `Apostar ${money(stake)}` : check.message;
+      $("ticketCount").textContent = String(state.bets.length);
+    }
+
+    function quickPickHint(type) {
+      if (type.mode === "option") return "Elige una opción";
+      return type.exact > 1 ? `Elige ${type.exact} cartas` : "Elige una carta";
+    }
+
+    function getStake() {
+      return Math.max(0, Number($("stakeInput").value || 0));
+    }
+
+    function canPlaceBet() {
+      if (!state || !state.currentRound) return { ok: false, message: "Cargando" };
+      if (drawing) return { ok: false, message: "Generando" };
+      if (Date.now() >= state.currentRound.lockAt) return { ok: false, message: "Sorteo cerrado" };
+      const type = betTypes[selectedType];
+      if (selection.length !== type.exact) return { ok: false, message: "Elige tu jugada" };
+      const stake = getStake();
+      if (!stake || stake < 1) return { ok: false, message: "Monto inválido" };
+      if (stake > state.balance) return { ok: false, message: "Saldo insuficiente" };
+      return { ok: true };
+    }
+
+    function placeBet() {
+      const check = canPlaceBet();
+      if (!check.ok) {
+        toast(check.message);
+        document.getElementById("playSection").scrollIntoView({ behavior: "smooth", block: "start" });
+        renderTicket();
+        return;
+      }
+      const type = betTypes[selectedType];
+      const stake = getStake();
+      const bet = {
+        id: `B-${Date.now().toString(36).toUpperCase()}-${Math.floor(Math.random() * 9999)}`,
+        roundId: state.currentRound.id,
+        type: selectedType,
+        typeLabel: type.label,
+        selection: [...selection],
+        selectionLabel: selectionToLabel(selectedType, selection),
+        odds: type.odds,
+        stake,
+        possibleWin: Number((stake * type.odds).toFixed(2)),
+        status: "pending",
+        payout: 0,
+        createdAt: Date.now()
+      };
+      state.balance = Number((state.balance - stake).toFixed(2));
+      state.bets.unshift(bet);
+      state.bets = state.bets.slice(0, 80);
+      selection = [];
+      save();
+      toast(`Boleto confirmado · ${bet.typeLabel} · ${money(stake)}.`);
+      render();
+    }
+
+    function quickPickSelection() {
+      const type = betTypes[selectedType];
+      if (type.mode === "option") {
+        selection = [type.options[Math.floor(Math.random() * type.options.length)]];
+      } else {
+        const pool = cardsForActivePicker().length >= type.exact ? cardsForActivePicker() : cards;
+        const shuffled = [...pool].sort(() => Math.random() - 0.5);
+        selection = shuffled.slice(0, type.exact).map(card => card.number);
+      }
+      toast("Selección rápida aplicada.");
+      render();
+    }
+
+    async function performDraw(manual) {
+      if (drawing || !state.currentRound) return;
+      drawing = true;
+      renderHeader();
+      const round = state.currentRound;
+      const currentBets = state.bets.filter(bet => bet.roundId === round.id);
+      const betSnapshotHash = await sha256(JSON.stringify(currentBets.map(bet => ({
+        id: bet.id,
+        roundId: bet.roundId,
+        type: bet.type,
+        selection: bet.selection,
+        stake: bet.stake,
+        odds: bet.odds,
+        createdAt: bet.createdAt
+      }))));
+      const publicSeed = `PUBLIC-H5-DEMO-${randomHex(12)}-${new Date().toISOString()}`;
+      const finalSeed = await sha256(`${round.serverSeed}|${publicSeed}|${round.id}|${betSnapshotHash}`);
+      const deck = await shuffleDeck(finalSeed);
+      const result = {
+        regular: deck.slice(0, 6),
+        golden: deck[6]
+      };
+      settleBets(round.id, result);
+      const drawRecord = {
+        id: `D-${Date.now().toString(36).toUpperCase()}`,
+        roundId: round.id,
+        createdAt: Date.now(),
+        manual: !!manual,
+        result,
+        serverSeed: round.serverSeed,
+        serverSeedHash: round.serverSeedHash,
+        publicSeed,
+        betSnapshotHash,
+        finalSeed,
+        verified: true
+      };
+      state.draws.unshift(drawRecord);
+      state.draws = state.draws.slice(0, 30);
+      verificationFocus = drawRecord.id;
+      drawing = false;
+      await newRound();
+      save();
+      toast(`Resultado generado para ${drawRecord.roundId}.`);
+      render();
+    }
+
+    async function shuffleDeck(finalSeed) {
+      const deck = cards.map(card => ({ ...card }));
+      let counter = 0;
+      for (let i = deck.length - 1; i > 0; i--) {
+        const hash = await sha256(`${finalSeed}:${counter++}:${i}`);
+        const value = parseInt(hash.slice(0, 13), 16);
+        const j = value % (i + 1);
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+      return deck;
+    }
+
+    function settleBets(roundId, result) {
+      state.bets.forEach(bet => {
+        if (bet.roundId !== roundId || bet.status !== "pending") return;
+        const type = betTypes[bet.type];
+        const won = type.eval(result, bet.selection);
+        bet.status = won ? "won" : "lost";
+        bet.resultLabel = resultLabel(result);
+        bet.settledAt = Date.now();
+        if (won) {
+          bet.payout = bet.possibleWin;
+          state.balance = Number((state.balance + bet.payout).toFixed(2));
+        } else {
+          bet.payout = 0;
+        }
+      });
+    }
+
+    function resultLabel(result) {
+      return `${result.regular.map(card => num(card.number)).join(", ")} + ${num(result.golden.number)}`;
+    }
+
+    function renderBetRecords() {
+      const bets = state.bets.slice(0, 12);
+      if (!bets.length) {
+        $("betRecords").innerHTML = `<div class="empty">Tus boletos apareceran aqui.</div>`;
+        return;
+      }
+      $("betRecords").innerHTML = bets.map(bet => `
+        <div class="record">
+          <div class="record-top">
+            <div class="record-title">${bet.typeLabel}<small>${bet.roundId} · ${formatDate(bet.createdAt)}</small></div>
+            ${statusBadge(bet.status)}
+          </div>
+          <div class="record-lines">
+            <div>Selección: <strong>${bet.selectionLabel}</strong></div>
+            <div>Monto: <strong>${money(bet.stake)}</strong> · Premio posible: <strong>${money(bet.possibleWin)}</strong></div>
+            <div>Pago: <strong>${money(bet.payout)}</strong> · Resultado: <strong>${bet.resultLabel || "Pendiente"}</strong></div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function statusBadge(status) {
+      if (status === "pending") return `<span class="badge">Pendiente</span>`;
+      if (status === "won") return `<span class="badge ok">Ganado</span>`;
+      return `<span class="badge">Perdido</span>`;
+    }
+
+    function renderDrawHistory() {
+      if (!state.draws.length) {
+        $("drawHistory").innerHTML = `<div class="empty">Aún no hay sorteos. Usa "Demo sorteo" para probar.</div>`;
+        return;
+      }
+      $("drawHistory").innerHTML = state.draws.map(draw => `
+        <div class="record">
+          <div class="record-top">
+            <div class="record-title">${draw.roundId}<small>${formatDate(draw.createdAt)}${draw.manual ? " · demo" : ""}</small></div>
+            <span class="badge ok">OK</span>
+          </div>
+          <div class="draw-cards" style="margin-top:8px;">
+            ${draw.result.regular.map(card => drawCardHtml(card, false)).join("")}
+            ${drawCardHtml(draw.result.golden, true)}
+          </div>
+          <div class="record-lines">
+            <div>Hash apuestas: <strong>${draw.betSnapshotHash.slice(0, 12)}...</strong></div>
+            <div>Semilla final: <strong>${draw.finalSeed.slice(0, 12)}...</strong></div>
+          </div>
+          <div class="inline-actions">
+            <button class="ghost-btn verifyBtn" data-id="${draw.id}">Ver detalle</button>
+            <button class="ghost-btn recheckBtn" data-id="${draw.id}">Comprobar</button>
+          </div>
+        </div>
+      `).join("");
+      $("drawHistory").querySelectorAll(".verifyBtn").forEach(button => {
+        button.addEventListener("click", () => {
+          verificationFocus = button.dataset.id;
+          renderVerification();
+          $("verificationPanel").scrollIntoView({ behavior: "smooth", block: "nearest" });
+        });
+      });
+      $("drawHistory").querySelectorAll(".recheckBtn").forEach(button => {
+        button.addEventListener("click", () => verifyDraw(button.dataset.id));
+      });
+    }
+
+    function renderVerification(extraStatus) {
+      const draw = state.draws.find(item => item.id === verificationFocus);
+      const panel = $("verificationPanel");
+      if (!draw) {
+        panel.className = "verify-panel";
+        panel.innerHTML = "";
+        return;
+      }
+      panel.className = "verify-panel show";
+      panel.innerHTML = `
+        <div class="hash-grid">
+          <div class="hash-box"><span>Estado</span><code>${extraStatus || "La semilla revelada coincide con el hash publicado antes del cierre."}</code></div>
+          <div class="hash-box"><span>Hash publicado antes del sorteo</span><code>${draw.serverSeedHash}</code></div>
+          <div class="hash-box"><span>Semilla del servidor revelada</span><code>${draw.serverSeed}</code></div>
+          <div class="hash-box"><span>Fuente pública demo</span><code>${draw.publicSeed}</code></div>
+          <div class="hash-box"><span>Hash de boletos cerrados</span><code>${draw.betSnapshotHash}</code></div>
+          <div class="hash-box"><span>Semilla final</span><code>${draw.finalSeed}</code></div>
+          <div class="hash-box"><span>Resultado generado</span><code>${resultLabel(draw.result)}</code></div>
+        </div>
+      `;
+    }
+
+    async function verifyDraw(id) {
+      const draw = state.draws.find(item => item.id === id);
+      if (!draw) return;
+      const hashOk = await sha256(draw.serverSeed) === draw.serverSeedHash;
+      const finalOk = await sha256(`${draw.serverSeed}|${draw.publicSeed}|${draw.roundId}|${draw.betSnapshotHash}`) === draw.finalSeed;
+      const deck = await shuffleDeck(draw.finalSeed);
+      const generated = {
+        regular: deck.slice(0, 6),
+        golden: deck[6]
+      };
+      const resultOk = resultLabel(generated) === resultLabel(draw.result);
+      const message = hashOk && finalOk && resultOk
+        ? "Comprobación exitosa: hash, semilla final y resultado coinciden."
+        : "La comprobación falló. Revisa los datos del sorteo.";
+      verificationFocus = id;
+      renderVerification(message);
+      toast(message);
+    }
+
+    function formatOdds(odds) {
+      return odds.toFixed(odds % 1 ? 2 : 0);
+    }
+
+    function bindEvents() {
+      $("placeBetBtn").addEventListener("click", placeBet);
+      $("quickPickBtn").addEventListener("click", quickPickSelection);
+      $("forceDrawBtn").addEventListener("click", () => performDraw(true));
+      $("quickDrawBtn").addEventListener("click", () => performDraw(true));
+      $("stakeInput").addEventListener("input", () => {
+        renderStake();
+        renderTicket();
+      });
+      document.querySelectorAll(".sticky-amount-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          $("stakeInput").value = button.dataset.amount;
+          renderStake();
+          renderTicket();
+        });
+      });
+      $("addBalanceBtn").addEventListener("click", () => {
+        state.balance = Number((state.balance + 500).toFixed(2));
+        save();
+        toast("Saldo demo añadido.");
+        render();
+      });
+      $("resetBtn").addEventListener("click", async () => {
+        localStorage.removeItem(STORAGE_KEY);
+        state = await defaultState();
+        selectedType = "golden";
+        selection = [];
+        activeTheme = "Todas";
+        verificationFocus = null;
+        await newRound();
+        toast("Demo reiniciado.");
+        render();
+      });
+      document.querySelectorAll(".nav-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          document.querySelectorAll(".nav-btn").forEach(item => item.classList.remove("active"));
+          button.classList.add("active");
+          document.getElementById(button.dataset.target).scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+    }
+
+    async function tick() {
+      if (!state || !state.currentRound) return;
+      if (!drawing && Date.now() >= state.currentRound.endAt) {
+        await performDraw(false);
+      } else {
+        renderHeader();
+        renderTicket();
+      }
+    }
+
+    (async function init() {
+      await load();
+      bindEvents();
+      render();
+      setInterval(tick, 1000);
+    })();
+  </script>
+</body>
+</html>
