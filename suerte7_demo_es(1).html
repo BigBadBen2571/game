@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Suerte 7 MX · Demo operativa</title>
+  <style>
+    :root {
+      --bg: #100714;
+      --panel: rgba(255,255,255,0.09);
+      --panel2: rgba(255,255,255,0.14);
+      --panel3: rgba(0,0,0,0.22);
+      --text: #fff7e8;
+      --muted: rgba(255,247,232,0.68);
+      --soft: rgba(255,247,232,0.42);
+      --gold: #f8c34a;
+      --gold2: #ffe89a;
+      --red: #e84c3d;
+      --green: #2abf83;
+      --blue: #3887ff;
+      --purple: #8d55ff;
+      --danger: #ff6b6b;
+      --ok: #42e49b;
+      --shadow: 0 24px 80px rgba(0,0,0,0.42);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(248,195,74,0.20), transparent 32%),
+        radial-gradient(circle at 92% 4%, rgba(232,76,61,0.19), transparent 30%),
+        radial-gradient(circle at 50% 96%, rgba(42,191,131,0.18), transparent 36%),
+        linear-gradient(145deg, #16091e 0%, #100714 48%, #2b0d23 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.14;
+      background-image:
+        linear-gradient(45deg, rgba(255,255,255,0.09) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255,255,255,0.09) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.09) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.09) 75%);
+      background-size: 24px 24px;
+      background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
+      mask-image: linear-gradient(to bottom, #000, transparent 72%);
+    }
+
+    .app {
+      width: min(1440px, 100%);
+      margin: 0 auto;
+      padding: 22px 18px 44px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .logo {
+      width: 54px;
+      height: 54px;
+      border-radius: 17px;
+      display: grid;
+      place-items: center;
+      font-size: 29px;
+      background: linear-gradient(145deg, #ffe16c, #ef902c 46%, #db3756);
+      box-shadow: 0 16px 42px rgba(248,195,74,0.24);
+      transform: rotate(-5deg);
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(24px, 4vw, 42px);
+      line-height: 1;
+      letter-spacing: -0.035em;
+    }
+
+    .brand p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill, button, input {
+      font-family: inherit;
+    }
+
+    .pill {
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      padding: 9px 13px;
+      border-radius: 999px;
+      font-size: 12px;
+      white-space: nowrap;
+      backdrop-filter: blur(12px);
+    }
+
+    .pill strong { color: var(--gold2); }
+
+    .btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 11px 14px;
+      font-weight: 800;
+      cursor: pointer;
+      color: #2b1406;
+      background: linear-gradient(135deg, var(--gold2), var(--gold));
+      box-shadow: 0 12px 28px rgba(248,195,74,0.20);
+      transition: transform .18s ease, opacity .18s ease, box-shadow .18s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 18px 34px rgba(248,195,74,0.24); }
+    .btn:disabled { opacity: .48; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn.secondary {
+      background: rgba(255,255,255,0.10);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: none;
+    }
+    .btn.danger {
+      background: rgba(255,107,107,0.18);
+      color: #ffe8e8;
+      border: 1px solid rgba(255,107,107,0.30);
+      box-shadow: none;
+    }
+    .btn.small { padding: 8px 10px; border-radius: 11px; font-size: 12px; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(390px, 0.85fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card {
+      border: 1px solid rgba(255,255,255,0.14);
+      background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.068));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .section {
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-head h2, .section-head h3 {
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .section-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .stat {
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.18);
+      border-radius: 18px;
+      padding: 12px;
+      min-height: 78px;
+    }
+
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 7px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1.05;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .stat small {
+      display: block;
+      color: var(--soft);
+      font-size: 11px;
+      margin-top: 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .result-stage {
+      border-radius: 24px;
+      padding: 16px;
+      background:
+        radial-gradient(circle at 18% 16%, rgba(255,232,154,0.16), transparent 24%),
+        linear-gradient(135deg, rgba(0,0,0,0.22), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .stage-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .stage-title h3 { margin: 0; }
+    .stage-title small { color: var(--muted); }
+
+    .draw-row {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr) 1.2fr;
+      gap: 10px;
+    }
+
+    .lottery-card {
+      min-height: 130px;
+      border-radius: 20px;
+      padding: 12px 9px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+
+    .lottery-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -28px -34px auto;
+      width: 86px;
+      height: 86px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.10);
+    }
+
+    .lottery-card.red { background: linear-gradient(160deg, rgba(232,76,61,0.32), rgba(255,255,255,0.07)); }
+    .lottery-card.green { background: linear-gradient(160deg, rgba(42,191,131,0.30), rgba(255,255,255,0.07)); }
+    .lottery-card.blue { background: linear-gradient(160deg, rgba(56,135,255,0.32), rgba(255,255,255,0.07)); }
+    .lottery-card.golden {
+      background: linear-gradient(145deg, #fff1a4, #f7c245 46%, #d87926);
+      color: #2b1406;
+      border: 1px solid rgba(255,255,255,0.48);
+      box-shadow: 0 22px 44px rgba(248,195,74,0.25);
+    }
+
+    .lottery-card.back {
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: var(--muted);
+      background:
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.08) 0 8px, rgba(255,255,255,0.04) 8px 16px),
+        rgba(255,255,255,0.07);
+    }
+
+    .num {
+      font-weight: 900;
+      font-size: 23px;
+      letter-spacing: -0.03em;
+    }
+
+    .emoji {
+      font-size: 33px;
+      line-height: 1;
+      margin: 6px 0 4px;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,0.25));
+    }
+
+    .card-name {
+      font-weight: 800;
+      font-size: 13px;
+      line-height: 1.15;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-meta {
+      margin-top: 6px;
+      color: rgba(255,247,232,0.62);
+      font-size: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .golden .card-meta { color: rgba(43,20,6,0.66); }
+
+    .result-summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .notice {
+      padding: 12px;
+      border-radius: 17px;
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .notice strong { color: var(--text); }
+    .notice.ok { color: #d8ffec; border-color: rgba(66,228,155,0.25); background: rgba(66,228,155,0.10); }
+    .notice.warn { color: #fff3cc; border-color: rgba(248,195,74,0.24); background: rgba(248,195,74,0.10); }
+
+    .bet-types {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .type-btn {
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.07);
+      color: var(--text);
+      border-radius: 18px;
+      padding: 12px;
+      text-align: left;
+      cursor: pointer;
+      min-height: 82px;
+      transition: transform .16s ease, border-color .16s ease, background .16s ease;
+    }
+
+    .type-btn:hover { transform: translateY(-1px); background: rgba(255,255,255,0.10); }
+    .type-btn.active { border-color: rgba(248,195,74,0.72); background: rgba(248,195,74,0.13); }
+    .type-btn strong { display: block; margin-bottom: 5px; font-size: 14px; }
+    .type-btn span { display: block; color: var(--muted); font-size: 12px; line-height: 1.35; }
+    .type-btn em { font-style: normal; color: var(--gold2); font-weight: 900; }
+
+    .option-panel {
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.16);
+      border-radius: 20px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+
+    .option-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .selection-label {
+      color: var(--gold2);
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .card-picker {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 7px;
+      max-height: 310px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .pick-card, .pick-option {
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.07);
+      color: var(--text);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform .14s ease, background .14s ease, border-color .14s ease;
+    }
+
+    .pick-card {
+      min-height: 76px;
+      padding: 7px 4px;
+      text-align: center;
+    }
+
+    .pick-card:hover, .pick-option:hover { transform: translateY(-1px); background: rgba(255,255,255,0.11); }
+    .pick-card.active, .pick-option.active { border-color: rgba(248,195,74,0.80); background: rgba(248,195,74,0.17); }
+    .pick-card .n { display: block; font-size: 13px; font-weight: 900; }
+    .pick-card .e { display: block; font-size: 20px; margin: 2px 0; }
+    .pick-card .name { display: block; color: var(--muted); font-size: 9px; line-height: 1.15; }
+
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 9px;
+    }
+
+    .pick-option {
+      min-height: 58px;
+      padding: 11px;
+      text-align: left;
+      font-weight: 850;
+    }
+    .pick-option small { display: block; color: var(--muted); margin-top: 4px; font-weight: 600; }
+
+    .bet-box {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 7px;
+    }
+
+    .amount-row {
+      display: flex;
+      gap: 7px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      min-height: 44px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(0,0,0,0.22);
+      color: var(--text);
+      padding: 0 12px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input[type="number"]:focus { border-color: rgba(248,195,74,0.65); }
+
+    .ticket-preview {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin-bottom: 12px;
+    }
+
+    .preview-item {
+      padding: 10px;
+      border-radius: 15px;
+      background: rgba(0,0,0,0.16);
+      border: 1px solid rgba(255,255,255,0.10);
+      min-height: 66px;
+    }
+
+    .preview-item span { display: block; color: var(--muted); font-size: 11px; margin-bottom: 6px; }
+    .preview-item strong { display: block; font-size: 14px; line-height: 1.15; }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .tab {
+      border: 1px solid rgba(255,255,255,0.13);
+      background: rgba(255,255,255,0.07);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 8px 11px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .tab.active { background: rgba(248,195,74,0.18); border-color: rgba(248,195,74,0.56); color: var(--gold2); }
+
+    .records {
+      display: grid;
+      gap: 10px;
+      max-height: 490px;
+      overflow: auto;
+      padding-right: 3px;
+    }
+
+    .record {
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.16);
+      border-radius: 17px;
+      padding: 12px;
+    }
+
+    .record-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 9px;
+    }
+
+    .record-title { font-weight: 900; line-height: 1.2; }
+    .record-title small { display: block; color: var(--muted); font-weight: 600; margin-top: 3px; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.08);
+    }
+    .badge.pending { color: #fff3cc; background: rgba(248,195,74,0.10); border-color: rgba(248,195,74,0.28); }
+    .badge.win { color: #d8ffec; background: rgba(66,228,155,0.12); border-color: rgba(66,228,155,0.32); }
+    .badge.lose { color: #ffe8e8; background: rgba(255,107,107,0.10); border-color: rgba(255,107,107,0.26); }
+    .badge.info { color: #e6efff; background: rgba(56,135,255,0.12); border-color: rgba(56,135,255,0.28); }
+
+    .record-line {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .record-line strong { color: var(--text); }
+
+    .mini-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 9px 0;
+    }
+
+    .mini {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 999px;
+      padding: 5px 8px;
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.12);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .mini.gold { color: #2b1406; background: linear-gradient(135deg, #fff1a4, #f8c34a); }
+
+    .verify-panel {
+      display: none;
+      margin-top: 12px;
+      border: 1px solid rgba(248,195,74,0.26);
+      background: rgba(248,195,74,0.08);
+      border-radius: 18px;
+      padding: 12px;
+    }
+    .verify-panel.show { display: block; }
+    .verify-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .hash-box {
+      background: rgba(0,0,0,0.20);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 14px;
+      padding: 10px;
+      overflow: hidden;
+    }
+    .hash-box span { display: block; color: var(--muted); font-size: 11px; margin-bottom: 6px; }
+    .hash-box code {
+      display: block;
+      color: var(--gold2);
+      font-size: 11px;
+      word-break: break-all;
+      line-height: 1.35;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 26px 12px;
+      border: 1px dashed rgba(255,255,255,0.15);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      width: min(360px, calc(100vw - 36px));
+      z-index: 10;
+      display: grid;
+      gap: 10px;
+    }
+    .toast-item {
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(28,12,32,0.94);
+      color: var(--text);
+      border-radius: 16px;
+      padding: 12px 14px;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.42);
+      animation: pop .18s ease;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    @keyframes pop { from { transform: translateY(8px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+    .responsible {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+      text-align: center;
+      padding: 4px 10px;
+    }
+
+    @media (max-width: 1180px) {
+      .layout { grid-template-columns: 1fr; }
+      .draw-row { grid-template-columns: repeat(4, 1fr); }
+      .draw-row .golden { grid-column: span 2; }
+      .card-picker { grid-template-columns: repeat(9, 1fr); }
+    }
+
+    @media (max-width: 720px) {
+      .app { padding: 15px 12px 32px; }
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .actions { justify-content: flex-start; width: 100%; }
+      .status-grid { grid-template-columns: repeat(2, 1fr); }
+      .draw-row { grid-template-columns: repeat(2, 1fr); }
+      .draw-row .golden { grid-column: span 2; }
+      .result-summary { grid-template-columns: 1fr; }
+      .bet-types { grid-template-columns: 1fr; }
+      .card-picker { grid-template-columns: repeat(4, 1fr); max-height: 330px; }
+      .option-grid { grid-template-columns: 1fr; }
+      .bet-box { grid-template-columns: 1fr; }
+      .ticket-preview { grid-template-columns: 1fr; }
+      .verify-grid { grid-template-columns: 1fr; }
+      .record-line { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">🍀</div>
+        <div>
+          <h1>Suerte 7 MX</h1>
+          <p>Demo operativa · sorteos verificables cada 5 minutos</p>
+        </div>
+      </div>
+      <div class="actions">
+        <div class="pill">Saldo demo: <strong id="balance">$0.00 MXN</strong></div>
+        <button class="btn secondary small" id="addBalanceBtn">Añadir $500</button>
+        <button class="btn danger small" id="resetBtn">Reiniciar demo</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section>
+        <div class="card section">
+          <div class="section-head">
+            <div>
+              <h2>Sorteo actual</h2>
+              <p>Las apuestas cierran 15 segundos antes del sorteo. El botón manual existe solo para probar el demo.</p>
+            </div>
+            <button class="btn small" id="forceDrawBtn">Realizar sorteo ahora</button>
+          </div>
+
+          <div class="status-grid">
+            <div class="stat">
+              <span>Número de sorteo</span>
+              <strong id="roundId">S7-0000</strong>
+              <small id="roundTime">Hora local</small>
+            </div>
+            <div class="stat">
+              <span>Tiempo restante</span>
+              <strong id="countdown">05:00</strong>
+              <small id="lockInfo">Cierre 00:15 antes</small>
+            </div>
+            <div class="stat">
+              <span>Estado</span>
+              <strong id="roundStatus">Abierto</strong>
+              <small id="statusText">Aceptando apuestas</small>
+            </div>
+            <div class="stat">
+              <span>Hash previo</span>
+              <strong id="shortHash">...</strong>
+              <small>Publicado antes de apostar</small>
+            </div>
+          </div>
+
+          <div class="result-stage">
+            <div class="stage-title">
+              <div>
+                <h3>Último resultado</h3>
+                <small id="lastResultLabel">Aún no hay resultados en esta sesión.</small>
+              </div>
+              <span class="badge info" id="verifyBadge">Sorteo verificable</span>
+            </div>
+            <div class="draw-row" id="resultCards"></div>
+            <div class="result-summary">
+              <div class="notice ok">
+                <strong>Transparencia:</strong> cada sorteo usa semilla del servidor, fuente pública demo y hash de apuestas.
+              </div>
+              <div class="notice warn">
+                <strong>Modo demo:</strong> el saldo no representa dinero real. En producción debe conectarse a wallet, KYC, límites y auditoría.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card section">
+          <div class="section-head">
+            <div>
+              <h3>Historial de sorteos</h3>
+              <p>Consulta resultados y verifica cómo se generó cada sorteo.</p>
+            </div>
+          </div>
+          <div id="drawHistory" class="records"></div>
+          <div id="verificationPanel" class="verify-panel"></div>
+        </div>
+      </section>
+
+      <aside>
+        <div class="card section">
+          <div class="section-head">
+            <div>
+              <h2>Realizar apuesta</h2>
+              <p>Selecciona una mecánica, elige tu pronóstico y confirma el monto.</p>
+            </div>
+          </div>
+
+          <div class="bet-types" id="betTypes"></div>
+
+          <div class="option-panel">
+            <div class="option-head">
+              <span id="selectionInstruction">Selecciona una opción</span>
+              <span class="selection-label" id="selectionLabel">Sin selección</span>
+            </div>
+            <div id="optionsArea"></div>
+          </div>
+
+          <div class="ticket-preview">
+            <div class="preview-item">
+              <span>Cuota</span>
+              <strong id="oddsPreview">x0.00</strong>
+            </div>
+            <div class="preview-item">
+              <span>Monto</span>
+              <strong id="stakePreview">$0.00 MXN</strong>
+            </div>
+            <div class="preview-item">
+              <span>Premio posible</span>
+              <strong id="winPreview">$0.00 MXN</strong>
+            </div>
+          </div>
+
+          <div class="bet-box">
+            <div class="field">
+              <label for="stakeInput">Monto de apuesta</label>
+              <input type="number" id="stakeInput" min="1" step="1" value="20" />
+              <div class="amount-row">
+                <button class="btn secondary small quickAmount" data-amount="10">$10</button>
+                <button class="btn secondary small quickAmount" data-amount="20">$20</button>
+                <button class="btn secondary small quickAmount" data-amount="50">$50</button>
+                <button class="btn secondary small quickAmount" data-amount="100">$100</button>
+              </div>
+            </div>
+            <button class="btn" id="placeBetBtn">Confirmar apuesta</button>
+          </div>
+
+          <div class="notice" id="betHint">Tu apuesta quedará pendiente hasta el próximo sorteo.</div>
+        </div>
+
+        <div class="card section">
+          <div class="section-head">
+            <div>
+              <h3>Mis apuestas</h3>
+              <p>Revisa apuestas pendientes, ganadas y perdidas.</p>
+            </div>
+          </div>
+          <div class="tabs" id="betTabs">
+            <button class="tab active" data-filter="all">Todas</button>
+            <button class="tab" data-filter="pending">Pendientes</button>
+            <button class="tab" data-filter="won">Ganadas</button>
+            <button class="tab" data-filter="lost">Perdidas</button>
+          </div>
+          <div id="betRecords" class="records"></div>
+        </div>
+      </aside>
+    </main>
+
+    <p class="responsible">Solo para mayores de 18 años. Juega responsablemente. Este demo no acepta dinero real y está diseñado únicamente para validar experiencia, reglas y flujo de producto.</p>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_KEY = "suerte7_mx_operational_demo_v1";
+    const DRAW_MS = 5 * 60 * 1000;
+    const LOCK_MS = 15 * 1000;
+
+    const cards = [
+      [1,"El Gallo","🐓","Tradición"],[2,"La Catrina","💀","Tradición"],[3,"El Mariachi","🎺","Tradición"],[4,"La Piñata","🪅","Tradición"],[5,"El Sombrero","👒","Tradición"],[6,"El Alebrije","🐉","Tradición"],[7,"La Máscara","🎭","Tradición"],[8,"El Papel Picado","🎊","Tradición"],[9,"La Calavera","💀","Tradición"],
+      [10,"El Taco","🌮","Comida"],[11,"El Elote","🌽","Comida"],[12,"El Chile","🌶️","Comida"],[13,"El Maíz","🌽","Comida"],[14,"El Mole","🍫","Comida"],[15,"El Cacao","🍫","Comida"],[16,"El Pan Dulce","🥐","Comida"],[17,"El Pozole","🍲","Comida"],[18,"La Horchata","🥤","Comida"],
+      [19,"El Balón","⚽","Fútbol"],[20,"La Portería","🥅","Fútbol"],[21,"El Gol","🥳","Fútbol"],[22,"La Copa","🏆","Fútbol"],[23,"La Cancha","🏟️","Fútbol"],[24,"La Camiseta","👕","Fútbol"],[25,"El Silbato","📣","Fútbol"],[26,"El Estadio","🏟️","Fútbol"],[27,"La Afición","🙌","Fútbol"],
+      [28,"La Feria","🎡","Fiesta"],[29,"El Confeti","🎉","Fiesta"],[30,"La Campana","🔔","Fiesta"],[31,"El Baile","💃","Fiesta"],[32,"La Guitarra","🎸","Fiesta"],[33,"El Tambor","🥁","Fiesta"],[34,"Los Fuegos","🎆","Fiesta"],[35,"La Banda","🎷","Fiesta"],[36,"El Carnaval","🎭","Fiesta"],
+      [37,"El Nopal","🌵","Naturaleza"],[38,"El Ajolote","🦎","Naturaleza"],[39,"El Jaguar","🐆","Naturaleza"],[40,"El Águila","🦅","Naturaleza"],[41,"La Mariposa","🦋","Naturaleza"],[42,"El Sol","☀️","Naturaleza"],[43,"La Luna","🌙","Naturaleza"],[44,"El Volcán","🌋","Naturaleza"],[45,"La Playa","🏖️","Naturaleza"],
+      [46,"La Moneda","🪙","Suerte"],[47,"El Diamante","💎","Suerte"],[48,"La Llave","🗝️","Suerte"],[49,"El Cofre","🧰","Suerte"],[50,"La Herradura","🐴","Suerte"],[51,"El Amuleto","🧿","Suerte"],[52,"El Rayo","⚡","Suerte"],[53,"La Corona","👑","Suerte"],[54,"La Fortuna","🍀","Suerte"]
+    ].map(([number, name, icon, theme]) => ({
+      number,
+      name,
+      icon,
+      theme,
+      color: number <= 18 ? "Rojo" : number <= 36 ? "Verde" : "Azul",
+      size: number <= 27 ? "Chico" : "Grande",
+      parity: number % 2 === 0 ? "Par" : "Impar"
+    }));
+
+    const cardByNumber = new Map(cards.map(c => [c.number, c]));
+    const themes = [...new Set(cards.map(c => c.theme))];
+
+    const betTypes = {
+      golden: {
+        label: "Carta dorada",
+        desc: "Acierta la carta dorada del sorteo.",
+        odds: 49.5,
+        mode: "card",
+        exact: 1,
+        eval: (draw, sel) => draw.golden.number === sel[0]
+      },
+      regular: {
+        label: "Carta regular",
+        desc: "Acierta si aparece entre las 6 cartas regulares.",
+        odds: 8.2,
+        mode: "card",
+        exact: 1,
+        eval: (draw, sel) => draw.regular.some(c => c.number === sel[0])
+      },
+      any: {
+        label: "Cualquier carta",
+        desc: "Acierta si aparece en cualquiera de las 7 cartas.",
+        odds: 7.0,
+        mode: "card",
+        exact: 1,
+        eval: (draw, sel) => allDrawNumbers(draw).includes(sel[0])
+      },
+      size: {
+        label: "Grande / Chico",
+        desc: "Pronostica el tamaño de la carta dorada.",
+        odds: 1.84,
+        mode: "option",
+        options: ["Grande", "Chico"],
+        exact: 1,
+        eval: (draw, sel) => draw.golden.size === sel[0]
+      },
+      parity: {
+        label: "Par / Impar",
+        desc: "Pronostica si la carta dorada será par o impar.",
+        odds: 1.84,
+        mode: "option",
+        options: ["Par", "Impar"],
+        exact: 1,
+        eval: (draw, sel) => draw.golden.parity === sel[0]
+      },
+      color: {
+        label: "Color",
+        desc: "Rojo, verde o azul para la carta dorada.",
+        odds: 2.75,
+        mode: "option",
+        options: ["Rojo", "Verde", "Azul"],
+        exact: 1,
+        eval: (draw, sel) => draw.golden.color === sel[0]
+      },
+      theme: {
+        label: "Tema",
+        desc: "Fútbol, comida, fiesta, suerte y más.",
+        odds: 5.5,
+        mode: "option",
+        options: themes,
+        exact: 1,
+        eval: (draw, sel) => draw.golden.theme === sel[0]
+      },
+      double: {
+        label: "Doble suerte",
+        desc: "Elige 2 cartas. Ganas si ambas salen.",
+        odds: 60,
+        mode: "card",
+        exact: 2,
+        eval: (draw, sel) => sel.every(n => allDrawNumbers(draw).includes(n))
+      },
+      nosalir: {
+        label: "Sin salir 5",
+        desc: "Elige 5 cartas. Ganas si ninguna sale.",
+        odds: 1.86,
+        mode: "card",
+        exact: 5,
+        eval: (draw, sel) => sel.every(n => !allDrawNumbers(draw).includes(n))
+      }
+    };
+
+    let state = null;
+    let selectedType = "golden";
+    let selection = [];
+    let betFilter = "all";
+    let drawing = false;
+    let verificationFocus = null;
+
+    const $ = id => document.getElementById(id);
+
+    function money(value) {
+      return Number(value || 0).toLocaleString("es-MX", { style: "currency", currency: "MXN" });
+    }
+
+    function pad(n) { return String(n).padStart(2, "0"); }
+    function formatTime(ms) {
+      const safe = Math.max(0, ms);
+      const s = Math.floor(safe / 1000);
+      return `${pad(Math.floor(s / 60))}:${pad(s % 60)}`;
+    }
+    function formatDate(ts) {
+      return new Date(ts).toLocaleString("es-MX", { hour12: false });
+    }
+    function num(n) { return String(n).padStart(2, "0"); }
+    function colorClass(color) {
+      return color === "Rojo" ? "red" : color === "Verde" ? "green" : "blue";
+    }
+    function allDrawNumbers(draw) {
+      return [...draw.regular.map(c => c.number), draw.golden.number];
+    }
+    function safeJson(obj) {
+      return JSON.stringify(obj, Object.keys(obj).sort());
+    }
+
+    async function sha256(str) {
+      if (window.crypto && crypto.subtle && window.TextEncoder) {
+        const bytes = new TextEncoder().encode(str);
+        const digest = await crypto.subtle.digest("SHA-256", bytes);
+        return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2,"0")).join("");
+      }
+      return fallbackHash(str);
+    }
+
+    function fallbackHash(str) {
+      let h1 = 0xdeadbeef ^ str.length;
+      let h2 = 0x41c6ce57 ^ str.length;
+      for (let i = 0, ch; i < str.length; i++) {
+        ch = str.charCodeAt(i);
+        h1 = Math.imul(h1 ^ ch, 2654435761);
+        h2 = Math.imul(h2 ^ ch, 1597334677);
+      }
+      h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+      h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+      const base = ((h2 >>> 0).toString(16).padStart(8,"0") + (h1 >>> 0).toString(16).padStart(8,"0"));
+      return (base + base + base + base).slice(0, 64);
+    }
+
+    function randomHex(bytes = 32) {
+      if (window.crypto && crypto.getRandomValues) {
+        const arr = new Uint8Array(bytes);
+        crypto.getRandomValues(arr);
+        return [...arr].map(b => b.toString(16).padStart(2,"0")).join("");
+      }
+      return Array.from({length: bytes}, () => Math.floor(Math.random() * 256).toString(16).padStart(2,"0")).join("");
+    }
+
+    async function newRound() {
+      const seq = state.roundSeq++;
+      const startAt = Date.now();
+      const serverSeed = randomHex(32);
+      const serverSeedHash = await sha256(serverSeed);
+      state.currentRound = {
+        id: `S7-${new Date(startAt).toISOString().slice(0,10).replace(/-/g,"")}-${String(seq).padStart(4,"0")}`,
+        startAt,
+        endAt: startAt + DRAW_MS,
+        lockAt: startAt + DRAW_MS - LOCK_MS,
+        serverSeed,
+        serverSeedHash,
+        status: "open"
+      };
+      save();
+    }
+
+    function defaultState() {
+      return {
+        balance: 1000,
+        bets: [],
+        draws: [],
+        roundSeq: 1,
+        currentRound: null
+      };
+    }
+
+    async function load() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        state = raw ? JSON.parse(raw) : defaultState();
+      } catch (e) {
+        state = defaultState();
+      }
+      if (!state.currentRound) await newRound();
+      if (state.currentRound && Date.now() >= state.currentRound.endAt) {
+        await performDraw(false);
+      }
+    }
+
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function toast(message) {
+      const node = document.createElement("div");
+      node.className = "toast-item";
+      node.textContent = message;
+      $("toast").appendChild(node);
+      setTimeout(() => node.remove(), 3600);
+    }
+
+    function render() {
+      renderHeader();
+      renderStatus();
+      renderResultCards();
+      renderBetTypes();
+      renderOptions();
+      renderPreview();
+      renderDrawHistory();
+      renderBetRecords();
+      renderVerificationPanel();
+    }
+
+    function renderHeader() {
+      $("balance").textContent = money(state.balance);
+    }
+
+    function renderStatus() {
+      const r = state.currentRound;
+      const now = Date.now();
+      const msLeft = Math.max(0, r.endAt - now);
+      const locked = now >= r.lockAt;
+      $("roundId").textContent = r.id;
+      $("roundTime").textContent = `Inicio: ${formatDate(r.startAt)}`;
+      $("countdown").textContent = formatTime(msLeft);
+      $("lockInfo").textContent = locked ? "Apuestas cerradas" : `Cierre en ${formatTime(r.lockAt - now)}`;
+      $("shortHash").textContent = r.serverSeedHash ? r.serverSeedHash.slice(0, 10) + "..." : "...";
+
+      if (drawing) {
+        $("roundStatus").textContent = "Generando";
+        $("statusText").textContent = "Calculando resultado";
+      } else if (locked) {
+        $("roundStatus").textContent = "Cerrado";
+        $("statusText").textContent = "Ya no acepta apuestas";
+      } else {
+        $("roundStatus").textContent = "Abierto";
+        $("statusText").textContent = "Aceptando apuestas";
+      }
+      $("forceDrawBtn").disabled = drawing;
+      $("placeBetBtn").disabled = !canPlaceBet().ok;
+    }
+
+    function renderResultCards() {
+      const last = state.draws[0];
+      const box = $("resultCards");
+      if (!last) {
+        $("lastResultLabel").textContent = "Aún no hay resultados en esta sesión.";
+        $("verifyBadge").textContent = "Sorteo verificable";
+        box.innerHTML = Array.from({length: 7}, (_, i) => `<div class="lottery-card back ${i === 6 ? "golden" : ""}"><div>${i === 6 ? "Carta dorada" : "Carta regular"}</div><strong>?</strong></div>`).join("");
+        return;
+      }
+      $("lastResultLabel").textContent = `${last.roundId} · ${formatDate(last.createdAt)}`;
+      $("verifyBadge").textContent = "Resultado verificado";
+      box.innerHTML = [
+        ...last.result.regular.map(c => cardHtml(c, false)),
+        cardHtml(last.result.golden, true)
+      ].join("");
+    }
+
+    function cardHtml(card, golden) {
+      return `<div class="lottery-card ${golden ? "golden" : colorClass(card.color)}">
+        <div class="num">${num(card.number)}</div>
+        <div class="emoji">${card.icon}</div>
+        <div>
+          <div class="card-name">${card.name}</div>
+          <div class="card-meta">${golden ? "Carta dorada" : card.color + " · " + card.theme}</div>
+        </div>
+      </div>`;
+    }
+
+    function renderBetTypes() {
+      const box = $("betTypes");
+      box.innerHTML = Object.entries(betTypes).map(([key, t]) => `
+        <button class="type-btn ${selectedType === key ? "active" : ""}" data-type="${key}">
+          <strong>${t.label} · <em>x${t.odds.toFixed(t.odds % 1 ? 2 : 0)}</em></strong>
+          <span>${t.desc}</span>
+        </button>
+      `).join("");
+      box.querySelectorAll(".type-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedType = btn.dataset.type;
+          selection = [];
+          render();
+        });
+      });
+    }
+
+    function renderOptions() {
+      const t = betTypes[selectedType];
+      const area = $("optionsArea");
+      $("selectionInstruction").textContent = t.mode === "card"
+        ? `Selecciona ${t.exact} carta${t.exact > 1 ? "s" : ""}`
+        : "Selecciona un pronóstico";
+      $("selectionLabel").textContent = selection.length ? selectionToLabel(selectedType, selection) : "Sin selección";
+
+      if (t.mode === "option") {
+        area.innerHTML = `<div class="option-grid">${t.options.map(opt => `
+          <button class="pick-option ${selection.includes(opt) ? "active" : ""}" data-opt="${opt}">
+            ${opt}<small>${optionHint(selectedType, opt)}</small>
+          </button>
+        `).join("")}</div>`;
+        area.querySelectorAll(".pick-option").forEach(btn => btn.addEventListener("click", () => {
+          selection = [btn.dataset.opt];
+          render();
+        }));
+        return;
+      }
+
+      area.innerHTML = `<div class="card-picker">${cards.map(c => `
+        <button class="pick-card ${selection.includes(c.number) ? "active" : ""}" data-number="${c.number}">
+          <span class="n">${num(c.number)}</span>
+          <span class="e">${c.icon}</span>
+          <span class="name">${c.name}</span>
+        </button>
+      `).join("")}</div>`;
+      area.querySelectorAll(".pick-card").forEach(btn => btn.addEventListener("click", () => toggleCard(Number(btn.dataset.number))));
+    }
+
+    function optionHint(type, opt) {
+      if (type === "size") return opt === "Grande" ? "28 a 54" : "01 a 27";
+      if (type === "parity") return opt === "Par" ? "Números pares" : "Números impares";
+      if (type === "color") return opt === "Rojo" ? "01 a 18" : opt === "Verde" ? "19 a 36" : "37 a 54";
+      if (type === "theme") return `${cards.filter(c => c.theme === opt).length} cartas`;
+      return "";
+    }
+
+    function toggleCard(number) {
+      const t = betTypes[selectedType];
+      if (selection.includes(number)) {
+        selection = selection.filter(n => n !== number);
+      } else if (selection.length >= t.exact) {
+        if (t.exact === 1) selection = [number];
+        else toast(`Solo puedes seleccionar ${t.exact} cartas para esta mecánica.`);
+      } else {
+        selection.push(number);
+      }
+      render();
+    }
+
+    function selectionToLabel(type, sel) {
+      const t = betTypes[type];
+      if (t.mode === "option") return sel.join(", ");
+      return sel.map(n => {
+        const c = cardByNumber.get(n);
+        return `${num(n)} ${c ? c.name : ""}`;
+      }).join(", ");
+    }
+
+    function renderPreview() {
+      const stake = getStake();
+      const t = betTypes[selectedType];
+      $("oddsPreview").textContent = `x${t.odds.toFixed(t.odds % 1 ? 2 : 0)}`;
+      $("stakePreview").textContent = money(stake);
+      $("winPreview").textContent = money(stake * t.odds);
+      const check = canPlaceBet();
+      $("placeBetBtn").disabled = !check.ok;
+      $("betHint").textContent = check.ok ? "Tu apuesta quedará pendiente hasta el próximo sorteo." : check.message;
+    }
+
+    function getStake() {
+      return Math.max(0, Number($("stakeInput").value || 0));
+    }
+
+    function canPlaceBet() {
+      if (!state || !state.currentRound) return { ok: false, message: "Cargando demo." };
+      if (drawing) return { ok: false, message: "El sorteo se está generando." };
+      if (Date.now() >= state.currentRound.lockAt) return { ok: false, message: "Las apuestas de este sorteo ya cerraron." };
+      const t = betTypes[selectedType];
+      if (selection.length !== t.exact) return { ok: false, message: `Debes seleccionar ${t.exact} opción${t.exact > 1 ? "es" : ""}.` };
+      const stake = getStake();
+      if (!stake || stake < 1) return { ok: false, message: "Ingresa un monto válido." };
+      if (stake > state.balance) return { ok: false, message: "Saldo demo insuficiente." };
+      return { ok: true, message: "OK" };
+    }
+
+    function placeBet() {
+      const check = canPlaceBet();
+      if (!check.ok) {
+        toast(check.message);
+        renderPreview();
+        return;
+      }
+      const t = betTypes[selectedType];
+      const stake = getStake();
+      const bet = {
+        id: `B-${Date.now().toString(36).toUpperCase()}-${Math.floor(Math.random() * 9999)}`,
+        roundId: state.currentRound.id,
+        type: selectedType,
+        typeLabel: t.label,
+        selection: [...selection],
+        selectionLabel: selectionToLabel(selectedType, selection),
+        odds: t.odds,
+        stake,
+        possibleWin: Number((stake * t.odds).toFixed(2)),
+        status: "pending",
+        payout: 0,
+        createdAt: Date.now()
+      };
+      state.balance = Number((state.balance - stake).toFixed(2));
+      state.bets.unshift(bet);
+      save();
+      toast(`Apuesta confirmada: ${bet.typeLabel} · ${money(stake)}.`);
+      selection = [];
+      render();
+    }
+
+    async function performDraw(manual) {
+      if (drawing || !state.currentRound) return;
+      drawing = true;
+      renderStatus();
+      const r = state.currentRound;
+      r.status = "drawing";
+      const currentBets = state.bets.filter(b => b.roundId === r.id);
+      const betSnapshotHash = await sha256(JSON.stringify(currentBets.map(b => ({
+        id: b.id,
+        roundId: b.roundId,
+        type: b.type,
+        selection: b.selection,
+        stake: b.stake,
+        odds: b.odds,
+        createdAt: b.createdAt
+      }))));
+      const publicSeed = `PUBLIC-DEMO-${randomHex(12)}-${new Date().toISOString()}`;
+      const finalSeed = await sha256(`${r.serverSeed}|${publicSeed}|${r.id}|${betSnapshotHash}`);
+      const deck = await shuffleDeck(finalSeed);
+      const result = {
+        regular: deck.slice(0, 6),
+        golden: deck[6]
+      };
+      const drawRecord = {
+        id: `D-${Date.now().toString(36).toUpperCase()}`,
+        roundId: r.id,
+        createdAt: Date.now(),
+        manual: !!manual,
+        result,
+        serverSeed: r.serverSeed,
+        serverSeedHash: r.serverSeedHash,
+        publicSeed,
+        betSnapshotHash,
+        finalSeed,
+        verified: true
+      };
+      settleBets(r.id, result);
+      state.draws.unshift(drawRecord);
+      state.draws = state.draws.slice(0, 30);
+      state.bets = state.bets.slice(0, 80);
+      drawing = false;
+      toast(`Resultado generado para ${r.id}.`);
+      await newRound();
+      verificationFocus = drawRecord.id;
+      save();
+      render();
+    }
+
+    async function shuffleDeck(finalSeed) {
+      const deck = cards.map(c => ({ ...c }));
+      let counter = 0;
+      for (let i = deck.length - 1; i > 0; i--) {
+        const h = await sha256(`${finalSeed}:${counter++}:${i}`);
+        const value = parseInt(h.slice(0, 13), 16);
+        const j = value % (i + 1);
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+      return deck;
+    }
+
+    function settleBets(roundId, result) {
+      state.bets.forEach(bet => {
+        if (bet.roundId !== roundId || bet.status !== "pending") return;
+        const type = betTypes[bet.type];
+        const won = type.eval(result, bet.selection);
+        bet.status = won ? "won" : "lost";
+        bet.settledAt = Date.now();
+        bet.resultLabel = resultLabel(result);
+        if (won) {
+          bet.payout = bet.possibleWin;
+          state.balance = Number((state.balance + bet.payout).toFixed(2));
+        } else {
+          bet.payout = 0;
+        }
+      });
+    }
+
+    function resultLabel(result) {
+      return `${result.regular.map(c => num(c.number)).join(", ")} + ${num(result.golden.number)}`;
+    }
+
+    function renderDrawHistory() {
+      const box = $("drawHistory");
+      if (!state.draws.length) {
+        box.innerHTML = `<div class="empty">Aún no hay sorteos. Realiza una apuesta o pulsa “Realizar sorteo ahora”.</div>`;
+        return;
+      }
+      box.innerHTML = state.draws.map(d => `
+        <div class="record">
+          <div class="record-top">
+            <div class="record-title">${d.roundId}<small>${formatDate(d.createdAt)} ${d.manual ? "· sorteo manual demo" : ""}</small></div>
+            <span class="badge win">Verificado</span>
+          </div>
+          <div class="mini-cards">
+            ${d.result.regular.map(c => `<span class="mini">${num(c.number)} ${c.icon}</span>`).join("")}
+            <span class="mini gold">${num(d.result.golden.number)} ${d.result.golden.icon} Dorada</span>
+          </div>
+          <div class="record-line">
+            <div>Hash de apuestas: <strong>${d.betSnapshotHash.slice(0, 12)}...</strong></div>
+            <div>Semilla final: <strong>${d.finalSeed.slice(0, 12)}...</strong></div>
+          </div>
+          <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn secondary small verifyBtn" data-id="${d.id}">Ver detalle</button>
+            <button class="btn secondary small recheckBtn" data-id="${d.id}">Comprobar de nuevo</button>
+          </div>
+        </div>
+      `).join("");
+      box.querySelectorAll(".verifyBtn").forEach(btn => btn.addEventListener("click", () => {
+        verificationFocus = btn.dataset.id;
+        renderVerificationPanel();
+        $("verificationPanel").scrollIntoView({behavior: "smooth", block: "nearest"});
+      }));
+      box.querySelectorAll(".recheckBtn").forEach(btn => btn.addEventListener("click", async () => {
+        verificationFocus = btn.dataset.id;
+        await verifyDraw(btn.dataset.id, true);
+      }));
+    }
+
+    function renderVerificationPanel(extraStatus) {
+      const panel = $("verificationPanel");
+      const d = state.draws.find(x => x.id === verificationFocus);
+      if (!d) {
+        panel.className = "verify-panel";
+        panel.innerHTML = "";
+        return;
+      }
+      panel.className = "verify-panel show";
+      panel.innerHTML = `
+        <div class="section-head" style="margin-bottom:8px;">
+          <div>
+            <h3>Detalle verificable</h3>
+            <p>${d.roundId} · ${extraStatus || "La semilla revelada coincide con el hash publicado antes del cierre."}</p>
+          </div>
+          <span class="badge win">OK</span>
+        </div>
+        <div class="verify-grid">
+          <div class="hash-box"><span>Hash publicado antes del sorteo</span><code>${d.serverSeedHash}</code></div>
+          <div class="hash-box"><span>Semilla del servidor revelada</span><code>${d.serverSeed}</code></div>
+          <div class="hash-box"><span>Fuente pública demo</span><code>${d.publicSeed}</code></div>
+          <div class="hash-box"><span>Hash de apuestas bloqueadas</span><code>${d.betSnapshotHash}</code></div>
+          <div class="hash-box"><span>Semilla final</span><code>${d.finalSeed}</code></div>
+          <div class="hash-box"><span>Resultado generado</span><code>${resultLabel(d.result)}</code></div>
+        </div>
+      `;
+    }
+
+    async function verifyDraw(id, showToast) {
+      const d = state.draws.find(x => x.id === id);
+      if (!d) return;
+      const hashOk = await sha256(d.serverSeed) === d.serverSeedHash;
+      const finalOk = await sha256(`${d.serverSeed}|${d.publicSeed}|${d.roundId}|${d.betSnapshotHash}`) === d.finalSeed;
+      const deck = await shuffleDeck(d.finalSeed);
+      const generated = {
+        regular: deck.slice(0, 6),
+        golden: deck[6]
+      };
+      const resultOk = resultLabel(generated) === resultLabel(d.result);
+      const status = hashOk && finalOk && resultOk
+        ? "Comprobación exitosa: hash, semilla final y resultado coinciden."
+        : "La comprobación falló. Revisa los datos del sorteo.";
+      verificationFocus = id;
+      renderVerificationPanel(status);
+      if (showToast) toast(status);
+    }
+
+    function renderBetRecords() {
+      const box = $("betRecords");
+      const bets = state.bets.filter(b => betFilter === "all" || b.status === betFilter);
+      if (!bets.length) {
+        box.innerHTML = `<div class="empty">No hay apuestas en este filtro.</div>`;
+        return;
+      }
+      box.innerHTML = bets.map(b => `
+        <div class="record">
+          <div class="record-top">
+            <div class="record-title">${b.typeLabel}<small>${b.roundId} · ${formatDate(b.createdAt)}</small></div>
+            ${statusBadge(b.status)}
+          </div>
+          <div class="record-line">
+            <div>Selección: <strong>${b.selectionLabel}</strong></div>
+            <div>Cuota: <strong>x${b.odds.toFixed(b.odds % 1 ? 2 : 0)}</strong></div>
+            <div>Monto: <strong>${money(b.stake)}</strong></div>
+            <div>Premio posible: <strong>${money(b.possibleWin)}</strong></div>
+            <div>Pago: <strong>${money(b.payout)}</strong></div>
+            <div>Resultado: <strong>${b.resultLabel || "Pendiente"}</strong></div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function statusBadge(status) {
+      if (status === "pending") return `<span class="badge pending">Pendiente</span>`;
+      if (status === "won") return `<span class="badge win">Ganada</span>`;
+      return `<span class="badge lose">Perdida</span>`;
+    }
+
+    function bindEvents() {
+      $("stakeInput").addEventListener("input", renderPreview);
+      $("placeBetBtn").addEventListener("click", placeBet);
+      $("forceDrawBtn").addEventListener("click", () => performDraw(true));
+      $("addBalanceBtn").addEventListener("click", () => {
+        state.balance = Number((state.balance + 500).toFixed(2));
+        save();
+        toast("Saldo demo añadido.");
+        render();
+      });
+      $("resetBtn").addEventListener("click", async () => {
+        localStorage.removeItem(STORAGE_KEY);
+        state = defaultState();
+        selectedType = "golden";
+        selection = [];
+        verificationFocus = null;
+        await newRound();
+        toast("Demo reiniciado.");
+        render();
+      });
+      document.querySelectorAll(".quickAmount").forEach(btn => btn.addEventListener("click", () => {
+        $("stakeInput").value = btn.dataset.amount;
+        renderPreview();
+      }));
+      $("betTabs").querySelectorAll(".tab").forEach(tab => tab.addEventListener("click", () => {
+        $("betTabs").querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        betFilter = tab.dataset.filter;
+        renderBetRecords();
+      }));
+    }
+
+    async function tick() {
+      if (!state || !state.currentRound) return;
+      if (!drawing && Date.now() >= state.currentRound.endAt) {
+        await performDraw(false);
+      } else {
+        renderStatus();
+      }
+    }
+
+    (async function init() {
+      await load();
+      bindEvents();
+      render();
+      setInterval(tick, 1000);
+    })();
+  </script>
+</body>
+</html>
